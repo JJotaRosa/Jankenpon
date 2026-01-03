@@ -3,7 +3,7 @@
 Este é um projeto simples de Jankenpon (Pedra, Papel, Tesoura) inspirado no clássico jogo do Master System, **Alex Kidd in Miracle World**.
 
 ## 🎮 Como Jogar
-1. Abra o arquivo `index.html` no seu navegador.
+1. Abra o arquivo `index.html` no seu navegador, ou acesse [Jankenpon](https://jankenpon-rho.vercel.app/).
 2. Escolha entre **Pedra**, **Papel** ou **Tesoura** nos botões inferiores.
 3. O Alex Kidd e o Janken (o chefe) farão a animação clássica e o vencedor será anunciado no ecrã.
 
