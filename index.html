@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Alex Kidd: Miracle World Jokenpô</title>
+    <style>
+        /* Estilo Geral: Master System Palette */
+        body {
+            background-color: #0055ff; /* Azul clássico da Sega */
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Press Start 2P', 'Courier New', monospace; /* Fonte estilo jogo */
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Chão de blocos castanhos */
+        .chao {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 100px;
+            background-color: #aa5500;
+            border-top: 8px solid #552200;
+            background-image: linear-gradient(45deg, #884400 25%, transparent 25%, transparent 75%, #884400 75%, #884400), 
+                              linear-gradient(45deg, #884400 25%, transparent 25%, transparent 75%, #884400 75%, #884400);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+        }
+
+        .placar-container {
+            margin-top: 20px;
+            padding: 15px;
+            background: #000;
+            border: 4px solid #fff;
+            display: flex;
+            gap: 40px;
+            box-shadow: 8px 8px 0px #000055;
+        }
+
+        .arena {
+            display: flex;
+            justify-content: space-around;
+            width: 80%;
+            margin-top: 50px;
+            z-index: 2;
+        }
+
+        /* Estilo dos Personagens */
+        .personagem {
+            text-align: center;
+            width: 200px;
+        }
+
+        .avatar {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+            border: 4px solid #fff;
+            background-color: #ffaa00; /* Fundo laranja Alex */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 60px;
+            image-rendering: pixelated;
+        }
+
+        .boss-avatar { background-color: #ff0000; } /* Fundo vermelho Boss */
+
+        .mao-container {
+            font-size: 80px;
+            height: 100px;
+            margin-top: 20px;
+            text-shadow: 4px 4px #000;
+        }
+
+        /* Animação de Balançar do Alex Kidd */
+        @keyframes jankenAnim {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-40px) rotate(-10deg); }
+        }
+
+        .animar { animation: jankenAnim 0.3s infinite; }
+
+        #mensagem {
+            font-size: 24px;
+            margin: 30px;
+            color: #ffff00;
+            text-shadow: 4px 4px #000;
+            height: 30px;
+        }
+
+        .botoes {
+            z-index: 3;
+            display: flex;
+            gap: 15px;
+        }
+
+        button {
+            background: #ffaa00;
+            border: 4px solid #fff;
+            padding: 15px;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        button:hover { background: #fff; }
+        button:disabled { background: #555; cursor: default; }
+
+    </style>
+</head>
+<body>
+
+    <div class="placar-container">
+        <div>ALEX: <span id="pts-alex">0</span></div>
+        <div>BOSS: <span id="pts-boss">0</span></div>
+    </div>
+
+    <div id="mensagem">JAN-KEN-PON!</div>
+
+    <div class="arena">
+        <div class="personagem">
+            <div class="avatar">👦</div>
+            <div id="mao-alex" class="mao-container">👊</div>
+            <p>ALEX KIDD</p>
+        </div>
+
+        <div class="personagem">
+            <div class="avatar boss-avatar">👹</div>
+            <div id="mao-boss" class="mao-container">👊</div>
+            <p>JANKEN</p>
+        </div>
+    </div>
+
+    <div class="botoes">
+        <button onclick="jogar('pedra')">PEDRA</button>
+        <button onclick="jogar('papel')">PAPEL</button>
+        <button onclick="jogar('tesoura')">TESOURA</button>
+    </div>
+
+    <div class="chao"></div>
+
+    <script>
+        let ptsAlex = 0;
+        let ptsBoss = 0;
+
+        function jogar(escolhaUser) {
+            const btn = document.querySelectorAll('button');
+            btn.forEach(b => b.disabled = true);
+
+            const mAlex = document.getElementById('mao-alex');
+            const mBoss = document.getElementById('mao-boss');
+            const msg = document.getElementById('mensagem');
+
+            // Reset e Animação
+            mAlex.innerText = "👊";
+            mBoss.innerText = "👊";
+            mAlex.classList.add('animar');
+            mBoss.classList.add('animar');
+            msg.innerText = "JAN... KEN...";
+
+            setTimeout(() => {
+                mAlex.classList.remove('animar');
+                mBoss.classList.remove('animar');
+                msg.innerText = "PON!";
+
+                const opcoes = ['pedra', 'papel', 'tesoura'];
+                const escolhaPC = opcoes[Math.floor(Math.random() * 3)];
+
+                const icones = { 'pedra': '👊', 'papel': '✋', 'tesoura': '✌️' };
+                
+                mAlex.innerText = icones[escolhaUser];
+                mBoss.innerText = icones[escolhaPC];
+
+                // Resultado
+                if (escolhaUser === escolhaPC) {
+                    msg.innerText = "EMPATE!";
+                } else if (
+                    (escolhaUser === 'pedra' && escolhaPC === 'tesoura') ||
+                    (escolhaUser === 'papel' && escolhaPC === 'pedra') ||
+                    (escolhaUser === 'tesoura' && escolhaPC === 'papel')
+                ) {
+                    msg.innerText = "ALEX VENCEU!";
+                    ptsAlex++;
+                } else {
+                    msg.innerText = "JANKEN VENCEU!";
+                    ptsBoss++;
+                }
+
+                document.getElementById('pts-alex').innerText = ptsAlex;
+                document.getElementById('pts-boss').innerText = ptsBoss;
+                
+                btn.forEach(b => b.disabled = false);
+            }, 1200);
+        }
+    </script>
+</body>
+</html>
